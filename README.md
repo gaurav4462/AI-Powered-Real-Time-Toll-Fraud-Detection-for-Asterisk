@@ -42,7 +42,9 @@ Typical attack steps:
 - Then calls premium-rate numbers tied to revenue-sharing agreements.
 - The victim pays for these calls.
 
-**Figure 1: Toll Fraud**
+
+   <img src="https://github.com/user-attachments/assets/2d03b9f1-9140-4956-bd1e-fc0a8e75334b" alt="Toll fraud" width="800"/>
+
 
 Attackers scan the Internet to find vulnerable VoIP PBX systems, often those with weak security or default passwords. Once found, they attempt to log in using weak/default SIP credentials. Upon success, they gain access without the owner realizing.
 
@@ -60,7 +62,7 @@ Attackers typically exploit weak passwords or open network doors, then use autom
 — Dexatel [2016]
 
 ---
-<img width="832" height="589" alt="Screenshot from 2025-09-21 17-55-58" src="https://github.com/user-attachments/assets/973b54e4-cd86-4df7-9c48-7773ca861357" />
+
 
 ## Table of Contents
 
@@ -130,13 +132,43 @@ Toll fraud typically happens in three stages: infiltration, execution, and evasi
 
 ### Steps Performed
 
-1. **Deployment of Asterisk PBX:** Configured with weak SIP credentials (e.g., username: 1234, password: 1234) to replicate common security misconfigurations.
-2. **Exposing the SIP Port:** Used `svmap` from SIPVicious to scan the target IP (10.100.15.99) for open SIP endpoints.
-3. **SIP Endpoint Scanning:** Brute-forced weak SIP credentials using `svcrack` with usernames 1001-1050 and `rockyou.txt` password list.
-4. **Unauthorized Access Gained:** Successfully authenticated with weak credentials (id-1001, pass-1234) and registered a SIP softphone client.
-5. **Automated Call Generation:** Used SIPp to initiate automated calls to simulated premium-rate numbers, emulating toll fraud.
+1. **Deployment of Asterisk PBX:** he Asterisk PBX server was installed and
+configured on a virtual machine. During configuration, weak SIP credentials
+were used (e.g., username: 1234, password: 1234) to replicate common
+real-world security misconfigurations.
 
-*(Figures referenced in the original report illustrate these steps.)*
+
+
+
+2. **Exposing the SIP Port:** On the attacker machine, the tool svmap from the
+SIPVicious toolkit was used to scan the target IP (10.100.15.99) for open and
+responsive SIP endpoints using the sudo svmap 10.100.15.99 .This command
+allowed the attacker to identify that the target system was running a SIP service
+and was potentially vulnerable to further exploitation<br>
+![WhatsApp Image 2025-08-11 at 10 50 5](https://github.com/user-attachments/assets/ae12adb9-e049-45a3-9e4b-ca8956a46ba8)
+
+3. **SIP Endpoint Scanning:** After identifying the open SIP port, a brute-force
+attack was conducted to discover weak SIP credentials. The attacker used the
+svcrack tool from the SIPVicious suite to attempt logins with usernames rang-
+ing from 1001 to 1050, combined with passwords from the popular rockyou.txt
+wordlist. The command executed was: sudo svcrack -u 1001-1050 -d /us-
+r/share/wordlists/rockyou.txt 10.100.15.99<br>
+![WhatsApp Image 2025-08-11 at 10 50 51](https://github.com/user-attachments/assets/ef217ad1-65d9-42fb-9fa1-448bcf9badbb)
+
+
+4. **Unauthorized Access Gained:** The attacker was able to successfully au-
+thenticate using weak SIP credential(id- 1001, pass- 1234) and register a SIP
+softphone client. This unauthorized access granted the attacker full control to
+initiate outgoing calls from the PBX.<br>
+<img src="https://github.com/user-attachments/assets/84d3d510-ec10-41a1-bd41-605fcb40970b" alt="WhatsApp Image" width="600"/>
+
+5. **Automated Call Generation:** Once registered, SIPp was configured to initi-
+ate a sequence of automated calls to a simulated premium-rate number. These
+calls emulated toll fraud, where high-cost calls are generated to exploit billing
+mechanisms.<br>
+<img width="600" height="589" alt="Screenshot from 2025-09-21 17-55-58" src="https://github.com/user-attachments/assets/973b54e4-cd86-4df7-9c48-7773ca861357" />
+
+
 
 ---
 
